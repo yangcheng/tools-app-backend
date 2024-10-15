@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "captain-definition": "json"
+    },
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "captain-definition"
+            ],
+            "url": "./captain-definition-schema.json"
+        }
+    ]
+}
