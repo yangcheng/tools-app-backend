@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Get the FastAPI endpoint from an environment variable
-FASTAPI_ENDPOINT = os.getenv('FASTAPI_ENDPOINT', 'http://localhost:8000')
+FASTAPI_ENDPOINT = os.getenv('FASTAPI_ENDPOINT', 'http://localhost:8000/api')
 
 st.title("Search App")
 
@@ -12,7 +12,7 @@ query = st.text_input("Enter your search query")
 if st.button("Search"):
     if query:
         try:
-            response = requests.post(f"{FASTAPI_ENDPOINT}/api/search", json={"query": query})
+            response = requests.post(f"{FASTAPI_ENDPOINT}/search", json={"query": query})
             if response.status_code == 200:
                 st.success("Search Results:")
                 st.json(response.json())
