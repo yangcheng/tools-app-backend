@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
 
 class SearchRequest(BaseModel):
     query: str
