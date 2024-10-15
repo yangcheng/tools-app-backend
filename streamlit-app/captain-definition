@@ -3,7 +3,7 @@
     "dockerfileLines": [
         "FROM python:3.12.7-slim-bookworm",
         "WORKDIR /app",
-        "COPY streamlit-app/requirements.txt .",
+        "COPY requirements.txt .",
         "RUN pip install --no-cache-dir -r requirements.txt",
         "COPY streamlit-app .",
         "EXPOSE 8501",
