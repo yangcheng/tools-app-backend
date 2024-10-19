@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import sys
 
 from .api import auth, reddit
 from .core.config import Settings
@@ -24,7 +25,15 @@ app.include_router(reddit.router, prefix="/api/reddit", tags=["reddit"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Reddit Search API"}
+    return {"message": "Welcome to the everything backend"}
+
+@app.get("/debug")
+async def debug_info():
+    return {
+        "version": "0.2.0",  # Match this with your app version
+        "endpoints": [route.path for route in app.routes],
+        "modules": list(sys.modules.keys())
+    }
 
 if __name__ == "__main__":
     import uvicorn
