@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "FastAPI",
+            "name": "FastAPI Backend",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -25,6 +25,38 @@
                 "pattern": "Uvicorn running on (http://127.0.0.1:8000)",
                 "uriFormat": "%s"
             }
+        },
+        {
+            "name": "React Frontend",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/frontend",
+            "sourceMapPathOverrides": {
+                "webpack:///./src/*": "${webRoot}/src/*"
+            }
+        },
+        {
+            "name": "Full Stack: Backend + Frontend",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev",
+            "cwd": "${workspaceFolder}/frontend",
+            "serverReadyAction": {
+                "pattern": "Local:.+(https?://\\S+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            },
+            "preLaunchTask": "start-backend"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Backend + Frontend",
+            "configurations": [
+                "FastAPI Backend",
+                "React Frontend"
+            ]
         }
     ]
 }

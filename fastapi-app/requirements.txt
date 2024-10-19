@@ -5,4 +5,5 @@ supabase
 jinja2
 uvicorn
 pydantic-settings
+praw
 
