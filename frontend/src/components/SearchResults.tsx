@@ -9,12 +9,14 @@ interface SearchResultsProps {
 const SearchResults: React.FC<SearchResultsProps> = ({ searchResults }) => {
     const handleDownloadCSV = () => {
         const csvContent = formatCSV(searchResults);
-        downloadFile(csvContent, 'text/csv', 'reddit_search_results.csv');
+        const fileName = `reddit_search_results_${searchResults.query}.csv`;
+        downloadFile(csvContent, 'text/csv', fileName);
     };
 
     const handleDownloadJSON = () => {
         const jsonContent = formatJSON(searchResults);
-        downloadFile(jsonContent, 'application/json', 'reddit_search_results.json');
+        const fileName = `reddit_search_results_${searchResults.query}.json`;
+        downloadFile(jsonContent, 'application/json', fileName);
     };
 
     return (

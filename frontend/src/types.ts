@@ -18,4 +18,5 @@ export interface SearchResponse {
     results: RedditPost[];
     total: number;
     has_more: boolean;
+    query: string;
 }

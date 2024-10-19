@@ -32,6 +32,7 @@ class SearchResponse(BaseModel):
     results: List[RedditPost]
     total: int
     has_more: bool
+    query: str
 
 @router.get("/search", response_model=SearchResponse)
 async def search_reddit(
@@ -55,6 +56,7 @@ async def search_reddit(
             search_results.append(post)
         
         response = SearchResponse(
+            query=keyword,
             results=search_results,
             total=len(search_results),
             has_more=False  # For now, we're not implementing pagination
