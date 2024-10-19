@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 interface User {
@@ -8,7 +6,6 @@ interface User {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
   const [user, setUser] = useState<User | null>(null)
   const [showAuthForm, setShowAuthForm] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
@@ -59,7 +56,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className="app-container">
       <div className="toolbar">
         {user ? (
           <>
@@ -71,60 +68,41 @@ function App() {
         )}
       </div>
 
-      {showAuthForm && !user && (
-        <div className="auth-form">
-          <h2>{authMode === 'login' ? 'Login' : 'Sign Up'}</h2>
-          <form onSubmit={handleAuth}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">{authMode === 'login' ? 'Login' : 'Sign Up'}</button>
-          </form>
-          <button onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}>
-            {authMode === 'login' ? 'Need an account? Sign Up' : 'Already have an account? Login'}
-          </button>
-        </div>
-      )}
+      <div className="main-content">
+        {showAuthForm && !user && (
+          <div className="auth-form">
+            <h2>{authMode === 'login' ? 'Login' : 'Sign Up'}</h2>
+            <form onSubmit={handleAuth}>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit">{authMode === 'login' ? 'Login' : 'Sign Up'}</button>
+            </form>
+            <button onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}>
+              {authMode === 'login' ? 'Need an account? Sign Up' : 'Already have an account? Login'}
+            </button>
+          </div>
+        )}
 
-      {user && (
-        <div className="search-box">
-          <input type="text" placeholder="Search..." />
-          <button>Search</button>
-        </div>
-      )}
-
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {user && (
+          <div className="search-box">
+            <input type="text" placeholder="Search..." />
+            <button>Search</button>
+          </div>
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

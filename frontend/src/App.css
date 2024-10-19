@@ -1,8 +1,33 @@
+body,
 #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: #1a1a1a;
+  box-sizing: border-box;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -44,25 +69,20 @@
   color: #888;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  background-color: #f0f0f0;
-}
-
 .auth-form {
   max-width: 300px;
   margin: 20px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid;
+  border-radius: 8px;
 }
 
 .auth-form input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid;
 }
 
 .auth-form button {
@@ -85,6 +105,8 @@
   padding: 10px;
   width: 300px;
   margin-right: 10px;
+  border-radius: 4px;
+  border: 1px solid;
 }
 
 .search-box button {
@@ -94,4 +116,16 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+/* Light theme overrides */
+@media (prefers-color-scheme: light) {
+  .toolbar {
+    background-color: #f9f9f9;
+  }
+
+  .auth-form,
+  .search-box input {
+    border-color: #213547;
+  }
 }
