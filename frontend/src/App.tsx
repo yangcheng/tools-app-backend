@@ -1,29 +1,26 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-
-interface User {
-  email: string;
-}
+import Toolbar from './components/Toolbar'
+import AuthForm from './components/AuthForm'
+import SearchBox from './components/SearchBox'
+import SearchResults from './components/SearchResults'
+import { User, SearchResponse } from './types'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [showAuthForm, setShowAuthForm] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [searchResults, setSearchResults] = useState<SearchResponse | null>(null)
 
   useEffect(() => {
-    // Check if user is already logged in (e.g., by checking localStorage or cookies)
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
   }, [])
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleAuth = async (email: string, password: string, mode: 'login' | 'signup') => {
     try {
-      const endpoint = authMode === 'login' ? '/auth/login' : '/auth/signup'
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/signup'
       const response = await fetch(`http://localhost:8000${endpoint}`, {
         method: 'POST',
         headers: {
@@ -33,10 +30,9 @@ function App() {
       })
       if (response.ok) {
         const data = await response.json()
-        if (authMode === 'login') {
+        if (mode === 'login') {
           setUser({ email })
           localStorage.setItem('user', JSON.stringify({ email }))
-          // You might want to store the tokens securely here
         } else {
           alert('Signup successful. Please check your email for verification.')
         }
@@ -52,54 +48,38 @@ function App() {
   const handleLogout = () => {
     setUser(null)
     localStorage.removeItem('user')
-    // You should also invalidate the tokens on the server-side
+  }
+
+  const handleSearch = async (keyword: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/reddit/search?keyword=${encodeURIComponent(keyword)}`)
+      if (!response.ok) {
+        throw new Error('Search failed')
+      }
+      const data: SearchResponse = await response.json()
+      setSearchResults(data)
+    } catch (error) {
+      alert('An error occurred while searching. Please try again.')
+    }
   }
 
   return (
     <div className="app-container">
-      <div className="toolbar">
-        {user ? (
-          <>
-            <span>Welcome, {user.email}</span>
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          <button onClick={() => setShowAuthForm(true)}>Login</button>
-        )}
-      </div>
+      <Toolbar
+        user={user}
+        onLogout={handleLogout}
+        onShowAuthForm={() => setShowAuthForm(true)}
+      />
 
       <div className="main-content">
         {showAuthForm && !user && (
-          <div className="auth-form">
-            <h2>{authMode === 'login' ? 'Login' : 'Sign Up'}</h2>
-            <form onSubmit={handleAuth}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit">{authMode === 'login' ? 'Login' : 'Sign Up'}</button>
-            </form>
-            <button onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}>
-              {authMode === 'login' ? 'Need an account? Sign Up' : 'Already have an account? Login'}
-            </button>
-          </div>
+          <AuthForm onAuth={handleAuth} onClose={() => setShowAuthForm(false)} />
         )}
 
-        {user && (
-          <div className="search-box">
-            <input type="text" placeholder="Search..." />
-            <button>Search</button>
-          </div>
+        {user && <SearchBox onSearch={handleSearch} />}
+
+        {searchResults && (
+          <SearchResults searchResults={searchResults} />
         )}
       </div>
     </div>
