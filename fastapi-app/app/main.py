@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import auth
+from .api import auth, reddit
 from .core.config import Settings
 
 settings = Settings()
@@ -18,12 +18,13 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(reddit.router, prefix="/api/reddit", tags=["reddit"])
 
 # Other app configurations and routes
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the moon API"}
+    return {"message": "Welcome to the Reddit Search API"}
 
 if __name__ == "__main__":
     import uvicorn

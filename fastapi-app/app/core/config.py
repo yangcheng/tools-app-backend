@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     BASE_URL: str = "http://localhost:8000"
     FRONTEND_URL: str = "http://localhost:5173"
     RESET_PASSWORD_URL: str = "{base_url}/auth/reset-password"
+    REDDIT_CLIENT_ID: str
+    REDDIT_CLIENT_SECRET: str
+    REDDIT_USER_AGENT: str
 
     @property
     def formatted_reset_password_url(self):
