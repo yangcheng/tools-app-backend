@@ -90,6 +90,8 @@ async def login(response: Response, login_data: LoginData, request: Request):
         )
 
 def determine_cookie_domain(origin):
+    if origin is None:
+        return None  # Handle non-web clients
     if origin.endswith(settings.DOMAIN):
         return f".{settings.DOMAIN}"  # Allows access from all subdomains
     elif "localhost" in origin:
