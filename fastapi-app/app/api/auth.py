@@ -45,18 +45,38 @@ async def signup(user: UserSignUp):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/login")
-async def login(response: Response, login_data: LoginData):
+async def login(response: Response, login_data: LoginData, request: Request):
     try:
         auth_response = supabase.auth.sign_in_with_password({
             "email": login_data.email,
             "password": login_data.password
         })
         
-        # Set cookies
-        response.set_cookie(key="access_token", value=auth_response.session.access_token, httponly=True, secure=True, samesite='lax')
-        response.set_cookie(key="refresh_token", value=auth_response.session.refresh_token, httponly=True, secure=True, samesite='lax')
+        # Determine the appropriate domain for the cookie
+        origin = request.headers.get("origin")
+        cookie_domain = determine_cookie_domain(origin)
         
-        # Return tokens in response body as well
+        # Set cookies
+        response.set_cookie(
+            key="access_token", 
+            value=auth_response.session.access_token, 
+            httponly=True, 
+            secure=True, 
+            samesite='none',
+            domain=cookie_domain,
+            max_age=3600
+        )
+        response.set_cookie(
+            key="refresh_token", 
+            value=auth_response.session.refresh_token, 
+            httponly=True, 
+            secure=True, 
+            samesite='none',
+            domain=cookie_domain,
+            max_age=7 * 24 * 3600
+        )
+        
+        # Return tokens in response body
         return {
             "access_token": auth_response.session.access_token,
             "refresh_token": auth_response.session.refresh_token,
@@ -69,11 +89,34 @@ async def login(response: Response, login_data: LoginData):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+def determine_cookie_domain(origin):
+    if origin.endswith(settings.DOMAIN):
+        return f".{settings.DOMAIN}"  # Allows access from all subdomains
+    elif "localhost" in origin:
+        return "localhost"
+    else:
+        return None  # This will set the cookie for the current domain only
+
 @router.post("/logout")
-async def logout(response: Response):
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
-    return {"message": "Logout successful"}
+async def logout(response: Response, request: Request):
+    origin = request.headers.get("origin")
+    cookie_domain = determine_cookie_domain(origin)
+
+    response.delete_cookie(
+        key="access_token",
+        domain=cookie_domain,
+        secure=True,
+        httponly=True,
+        samesite='none'
+    )
+    response.delete_cookie(
+        key="refresh_token",
+        domain=cookie_domain,
+        secure=True,
+        httponly=True,
+        samesite='none'
+    )
+    return {"message": "Logged out successfully"}
 
 @router.post("/forgot-password")
 async def forgot_password(request: PasswordResetRequest):

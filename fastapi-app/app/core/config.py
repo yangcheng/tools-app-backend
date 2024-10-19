@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     REDDIT_CLIENT_ID: str
     REDDIT_CLIENT_SECRET: str
     REDDIT_USER_AGENT: str
-
+    DOMAIN: str
     @property
     def formatted_reset_password_url(self):
         return self.RESET_PASSWORD_URL.format(base_url=self.BASE_URL)
